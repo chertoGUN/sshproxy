@@ -2,23 +2,22 @@
 This tool was designed with covert pentesting in mind. It it designed to mask traffic with SSH using binded ports and proxychains.
 
 # Use Case
-This focuses on pivoting undected (or at least, if you are detected, not much info can be derived from the traffic). Because of the complexity of this topic, it will be explained with an example.
+This focuses on pivoting undected (or at least, if you are detected, not much info can be derived from the traffic).
 
-## \*Nix to \*Nix Scenario
 There are 3 boxes in the network, all \*nix machines. One is your attack box, the second is a box you have pwned and the third is a box you want to pwn, but you are at a delima. How do you route your traffic from the attack box, through the pwned box, to the target box?
 
+You run this script and then prepend all following network based recon commands with "proxychains ". Take note that the scipt makes a proxychain.conf file, so if you move out of the working directory, bring it with you. This leverages the fact that proxychains checks the working directory for a configuration file first.
+
 ## What this is actually doing...
-1. Creates a local proxychains file based on the existing one, so any custom settings are copied over and the main one is not accidentally messed up. In this file, it specifies the IP/domain and port pair that is specified during execution as a proxy
+1. Creates a local proxychains file based on the existing one (/etc/proxychains.conf), so any custom settings are copied over and the main one is not accidentally messed up. In this file, it specifies the IP/domain and port pair that is specified during execution as a proxy
 2. It connects to the IP provided with the user and password provided via SSH
 3. Immediately after getting a terminal, it executes a command to create a binded port run by SSH
 
 ## In-Depth Explanation of Traffic
-For this example, we are assuming we only scanned TCP/80 on the target and routed it through another box (Pwned Box).
-- Target - 192.168.56.110
-- Pwned Box - 192.168.56.111
-- Attack Box - 192.168.56.12
+For this example, we are assuming we only scanned one port on the target and routed it through another box (Pwned Box).
 - Port - the port you specify in the sshproxy.sh tool
 - e - ephemeral port
+- 22 - port 22
 
 1. Attack:e --> Pwned:Port TCP, SYN 
 2. Pwned:Port --> Attack:e TCP, SYN/ACK
