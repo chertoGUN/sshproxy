@@ -39,3 +39,8 @@ For this example, we are assuming we only scanned one port on the target and rou
 - If the account connection is severed, you have to re-initiate the connection to turn the proxy back on
 - Be aware that if there are network connection issues, it will likely expose some data in clear text
 - This does not prevent blue team from identifying the attack box, only the target
+
+#### Tools Verified to Work
+- nmap
+- nikto
+- dirb
