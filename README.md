@@ -44,3 +44,5 @@ For this example, we are assuming we only scanned one port on the target and rou
 - nmap
 - nikto
 - dirb
+- curl
+- nc (both bind and reverse shells)
