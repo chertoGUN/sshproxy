@@ -14,14 +14,29 @@ You run this script and then prepend all following network based recon commands 
 3. Immediately after getting a terminal, it executes a command to create a binded port run by SSH
 
 ## blue team notes
-- All SSH responses are on the same data stream but the TCP streams are different per port scanned
-- In testing, all SSH responses had data 88 bytes long, total packet length was 156 bytes (may not be indicative of all topologies)
-- A TCP RST exposes the SSH client being used, RSTs are marked in red in Wireshark by default
+- After the proxy is created, all SSH traffic over port 22 is the proxy sending the messages printed to STDOUT that tell the creator of the proxy the status of each connection.
+- Both requests and reponses are sent through the port setup for the proxy by the attacker (ports below 1024 require privileged access to set as proxies)
+- The general flow of a single request and the corresponding response follows this pattern
+	1. Three way handshake
+	2. Attack Box --> Proxy [PSH,ACK]
+	3. Corresponding ACK
+	4. Attack Box <-- Proxy [PSH,ACK]
+	5. Corresponding ACK
+	6. Attack Box --> Proxy [FIN,ACK]
+	7. Attack Box <-- Proxy [FIN,ACK]
+	8. Corresponding ACK
+- If there is no reponse (e.g. you nmap a closed port), it looks as follows 
+	1. Three way handshake
+	2. Attack Box --> Proxy [PSH,ACK]
+	3. Corresponding ACK
+	4. Attack Box <-- Proxy [FIN,ACK]
+	5. Attack Box --> Proxy [FIN,ACK]
+	6. Corresponding ACK
 
 ## red team notes
 - If the account connection is severed, you have to re-initiate the connection to turn the proxy back on
 - Be aware that if there are network connection issues, it will likely expose some data in clear text
-- This does not prevent blue team from identifying the attack box, only the target
+- This does not prevent blue team from identifying the source (attack box), only the destination (target)
 
 ### tools verified to work
 - nmap
